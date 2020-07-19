@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Teams</title>
+    <meta name="description" content="my First PWA" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#00897B" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="blue darken-1" role="navigation">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo" id="logo-container">Football Teams</a>
+            <a href="index.html" class="sidenav-trigger" data-target="nav-mobile">
+                <i class="material-icons">arrow_back</i>
+            </a>
+
+            <ul class="topnav right hide-on-med-and-down"></ul>
+            <ul class="sidenav" id="nav-mobile"></ul>
+        </div>
+    </nav>
+    <!-- End Navigation -->
+
+    <div class="container" id="body-content"></div>
+
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red" id="save">
+            <i class="large material-icons">star</i>
+        </a>
+    </div>
+
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large red" style="display: none;" id="remove">
+            <i class="large material-icons">delete_forever</i>
+        </a>
+    </div>
+
+    <script src="js/materialize.min.js"></script>
+    <script src="js/idb_library.js"></script>
+    <script src="js/idb.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        // Register Service Worker
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register('/service-worker.js')
+                    .then(function() {
+                        console.log("Pendaftaran ServiceWorker berhasil");
+                    })
+                    .catch(function () {
+                        console.log("Pendaftaran ServiceWorker gagal");
+                        
+                    });
+            });
+        }else {
+            console.log("ServiceWorker belum didukung browser ini.");            
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var isFromSaved = urlParams.get("saved");
+            var save = document.getElementById("save");
+            var remove = document.getElementById("remove");
+
+            if (isFromSaved) {
+                save.style.display = 'none';
+                remove.style.display = 'block';
+                getSavedTeamById();
+            }else {
+                var item = getTeamById();
+            }
+            save.onclick = function() {
+                item.then(function(team) {
+                    addToFavorite(team);
+                });
+            }
+
+            remove.onclick = function() {      
+                var idTeam = parseInt(urlParams.get("id"));                
+                
+                if (idTeam) {
+                    removeFromFavorite(idTeam);                    
+                }else {
+                    console.log("No Team ID");
+                }
+            }
+
+        });
+    </script>
+</body>
+</html>
