@@ -1,4 +1,4 @@
-var base_url = " https://api.football-data.org/v2/";
+var base_url = "https://api.football-data.org/v2/";
 
 function status(response) {
     if (response.status !== 200) {
@@ -18,40 +18,6 @@ function error(error) {
 }
 
 function getTeams() {
-    if ('caches' in window) {
-        caches.match(base_url+"teams")
-            .then(function(response) {
-                if (response) {
-                    response.json().then(function(data) {
-                        var teamsHtml = "";            
-                        data.teams.forEach(function(team) {               
-                            teamsHtml += `
-                                <div class="col s12 m6 l4">
-                                    <div class="card">
-                                        <div class="card-image card-image waves-effect waves-block waves-light">
-                                            <a href="./detail_player.html?id=${team.id}">
-                                                <img style="height: 500px" src="${team.crestUrl || 'images/nologo.png'}">
-                                            </a>
-                                        </div>
-                                        <div class="card-content">
-                                            <span class="card-title truncate">
-                                                ${team.name}
-                                            </span>
-                                            <p>
-                                                ${team.venue || 'No Venue'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        document.getElementById("loading").style.display = "none";
-                        document.getElementById("teams").innerHTML = teamsHtml;                    
-                    })
-                }
-            })
-    }
-    
     fetch(base_url+"teams", {
         headers: { 'X-Auth-Token': '55a8b3694ddf4b7b9710c66a4b5dc0b4'}
     })
@@ -90,38 +56,6 @@ function getTeamById() {
     return new Promise(function(resolve, reject) {
         var urlParams = new URLSearchParams(window.location.search);
         var idParam = urlParams.get("id");
-    
-        if ('caches' in window) {
-            caches.match(base_url+"teams/"+idParam)
-                .then(function(response) {
-                    if (response) {
-                        response.json().then(function(team) {
-                            var teamsHtml = `
-                                    <div class="col s12 m6 l4">
-                                    <div class="card">
-                                        <div class="card-image card-image waves-effect waves-block waves-light">
-                                            <a href="./detail_player.html?id=${team.id}">
-                                                <img style="height: 500px" src="${team.crestUrl || 'images/nologo.png'}">
-                                            </a>
-                                        </div>
-                                        <div class="card-content">
-                                            <span class="card-title truncate">
-                                                ${team.name}
-                                            </span>
-                                            <p>
-                                                ${team.venue || 'No Venue'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                    
-                            document.getElementById("body-content").innerHTML = teamsHtml;
-                            resolve(data);                            
-                        })
-                    }
-                })  
-        } 
 
         fetch(base_url+"teams/"+idParam, {
             headers: { 'X-Auth-Token': '55a8b3694ddf4b7b9710c66a4b5dc0b4'}
