@@ -17,6 +17,9 @@ workbox.precaching.precacheAndRoute([
         url: '/index.html', revision: '1'
     },
     {
+        url: '/detail_player.html', revision: '1'
+    },
+    {
         url: '/pages/home.html', revision: '1'
     },
     {
@@ -55,7 +58,9 @@ workbox.precaching.precacheAndRoute([
     {
         url: '/js/main.js', revision: '1'
     }
-]);
+], {
+    ignoreUrlParametersMatching: [/.*/]
+});
 
 workbox.routing.registerRoute(
   /^https:\/\/api.football-data.org\/v2\//,
